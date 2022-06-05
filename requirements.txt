@@ -1,6 +1,6 @@
-Django
-djangorestframework
-nltk
+Django==3.2.13
+djangorestframework==3.13.1
+nltk==3.6.7
 numpy
 pandas
 PyMySQL
@@ -8,4 +8,5 @@ rake_nltk
 requests
 scikit_learn
 spacy
+SQLAlchemy
 textstat
