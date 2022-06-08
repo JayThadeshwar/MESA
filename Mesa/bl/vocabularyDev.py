@@ -157,12 +157,14 @@ set_of_common_words.remove('exemption')
 set_of_common_words.remove('doctrine')
 set_of_common_words.remove('manor')
 
+import re
+
 def filterCommonWords(listOfExtractedWords):
     
     #Filter Words        
     li = []
     for dword in listOfExtractedWords:
-        if dword not in set_of_common_words:
+        if(dword not in set_of_common_words and (not re.search('[^a-zA-Z]', dword))):
             li.append(dword)
     return li 
 
@@ -203,7 +205,7 @@ def riOFWord(inputText):
     proSent = ' '.join(res)
 
     # Removing stopwords and common words
-    fin = [word for word in proSent.split(' ') if word.lower() not in set_of_common_words and word.lower() not in stop_words]    
+    fin = [word for word in proSent.split(' ') if word.lower() not in set_of_common_words and word.lower() not in stop_words and (not re.search('[^a-zA-Z]', word))]    
     proFin = ' '.join(fin)
 
     # Scoring words based in readability index
@@ -254,16 +256,16 @@ def extractKeywordsFromContent(content):
 
     for word in list(res.keys())[:10]:
         syns = wordnet.synsets(word)
-        synonyms = list()
-        antonyms = list()
+        synonyms = set()
+        antonyms = set()
         definition = list()
 
         for syn in syns:
-            synon = [word.name() for word in syn.lemmas()]          
+            synon = [word.name() for word in syn.lemmas()]
             anton= [lemma.antonyms()[0].name() for lemma in syn.lemmas() if lemma.antonyms()]
-            synonyms += synon
-            antonyms += anton
+            synonyms.update(synon)
+            antonyms.update(anton)
             definition.append(syn.definition())    
 
-        result.append(WordInformation(word, definition, synonyms, antonyms).__dict__)
+        result.append(WordInformation(word, definition, list(synonyms), list(antonyms)).__dict__)
     return result

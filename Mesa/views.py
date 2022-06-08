@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from sqlalchemy import null
-from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 
-from Mesa.models import User
-from Mesa.extract_keywords import extractKeywordsFromContent
+from rest_framework.parsers import JSONParser
+from rest_framework import viewsets
+
 from Mesa.models import Chapter, User
 from Mesa.serializers import UserSerializer, ChapterSerializer
-from rest_framework import viewsets
+from Mesa.bl.vocabularyDev import extractKeywordsFromContent
+from Mesa.bl.grammarMod import generateGrammarDetails
 
 # Create your views here.
 
@@ -65,3 +64,9 @@ def keywordApi(request, chapter_id):
         finalRes = {"keywords": result}     
         return JsonResponse(finalRes, safe=False)
 
+@csrf_exempt
+def grammarApi(request, chapter_id):
+    if request.method=='GET':
+        chapter=Chapter.objects.get(id = chapter_id)
+        result = generateGrammarDetails(chapter.content,3)        
+        return JsonResponse(result, safe=False)
