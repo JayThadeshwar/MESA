@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Mesa.models import User, Chapter
+from Mesa.models import  User, Chapter
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

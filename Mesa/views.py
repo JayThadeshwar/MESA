@@ -3,15 +3,17 @@ from django.views.decorators.csrf import csrf_exempt
 from sqlalchemy import null
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-
-from Mesa.models import User
 from Mesa.extract_keywords import extractKeywordsFromContent
+from Mesa.translation import translatemethod
+from Mesa.summarization import summarizemethod
 from Mesa.models import Chapter, User
 from Mesa.serializers import UserSerializer, ChapterSerializer
+#from Mesa.mcq import extractMCQ
 from rest_framework import viewsets
 
 # Create your views here.
-
+summ_result=''
+mcqs={}
 class ChapterViewSet(viewsets.ModelViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
@@ -65,3 +67,33 @@ def keywordApi(request, chapter_id):
         finalRes = {"keywords": result}     
         return JsonResponse(finalRes, safe=False)
 
+@csrf_exempt
+def summarizeApi(request, chapter_id):
+    if request.method=='GET':
+        chapter=Chapter.objects.get(id = chapter_id)                    
+        summ_result = summarizemethod(chapter.content)   
+        data_to_send = {"Summarized Text": summ_result}     
+        return JsonResponse(data_to_send, safe=False)
+
+# @csrf_exempt
+# def translateApi(request):
+#     if request.method=='GET':
+#         trans_result = translatemethod(summ_result)   
+#         data_to_send = {"Translated Text": trans_result}     
+#         return JsonResponse(data_to_send, safe=False)
+
+# @csrf_exempt
+# def mcqApi(request, chapter_id):
+#     if request.method=='GET':
+#         chapter=Chapter.objects.get(id = chapter_id)                    
+#         mcqs = extractMCQ(chapter.content)        
+#         return JsonResponse(mcqs, safe=False)
+
+@csrf_exempt
+def translateApi(request, chapter_id):
+    if request.method=='GET':
+        chapter=Chapter.objects.get(id = chapter_id) 
+        summ_result = summarizemethod(chapter.content)                    
+        trans_result = translatemethod(summ_result)   
+        data_to_send = {"Translated Text": trans_result}     
+        return JsonResponse(data_to_send, safe=False)

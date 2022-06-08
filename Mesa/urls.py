@@ -10,5 +10,9 @@ urlpatterns=[
      path('', include(router.urls)),
      url(r'^user$',views.userApi),
      url(r'^user/validate$',views.validateUserApi),
-     url(r'^keyword/(?P<chapter_id>\d+)/$', views.keywordApi, name='keyword')
+     #url(r'^translate$', views.translateApi, name='translate'),
+     url(r'^summarize/(?P<chapter_id>\d+)/$', views.summarizeApi, name='summarize'),
+     url(r'^translate/(?P<chapter_id>\d+)/$', views.translateApi, name='translate'),
+     url(r'^keyword/(?P<chapter_id>\d+)/$', views.keywordApi, name='keyword'),
+     #url(r'^mcq/(?P<chapter_id>\d+)/$', views.mcqApi, name='mcq')
 ]

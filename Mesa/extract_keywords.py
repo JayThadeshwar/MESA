@@ -7,7 +7,7 @@ import nltk
 
 import string
 import pandas as pd
-import numpy as np
+import numpy    as np
 import spacy
 import requests
 import textstat
