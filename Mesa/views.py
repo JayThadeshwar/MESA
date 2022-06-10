@@ -8,6 +8,7 @@ from Mesa.models import Chapter, User
 from Mesa.serializers import UserSerializer, ChapterSerializer
 from Mesa.bl.vocabularyDev import extractKeywordsFromContent
 from Mesa.bl.grammarMod import generateGrammarDetails
+from Mesa.bl.summaryNTranslation import summarizemethod
 
 # Create your views here.
 
@@ -69,4 +70,11 @@ def grammarApi(request, chapter_id):
     if request.method=='GET':
         chapter=Chapter.objects.get(id = chapter_id)
         result = generateGrammarDetails(chapter.content,3)        
+        return JsonResponse(result, safe=False)
+
+@csrf_exempt
+def summarizeApi(request, chapter_id):
+    if request.method=='GET':
+        chapter=Chapter.objects.get(id = chapter_id)                    
+        result = summarizemethod(chapter.content)   
         return JsonResponse(result, safe=False)
