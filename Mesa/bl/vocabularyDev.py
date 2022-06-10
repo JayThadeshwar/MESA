@@ -237,18 +237,41 @@ class WordInformation:
     definition=[]
     synonyms=[]
     antonyms=[]
-    # example=[]
-    # audioLink=''
+    example=[]
+    #audioLink=[]
     # translatedWord=''
 
-    def __init__(self,w,d,s,a):
+    def __init__(self,w,d,s,a,e):
         self.word=w
         self.definition=d
         self.synonyms=s
         self.antonyms=a
-        # self.example=e
-        # self.audioLink=ad
+        self.example=e
+        #self.audioLink=ad
         # self.translatedWord=t    
+
+def findAudio(data):
+  if 'phonetics' in data[0]:
+    if 'phonetics' != None:
+      if 'audio' in data[0]['phonetics'][0] and 'audio' != None:
+        ad_link=data[0]['phonetics'][0]['audio']
+        return ad_link
+    else:
+        return None
+
+def findExample(data):
+  if 'meanings' in data[0]:
+    if 'meanings' == None:
+      return
+    else:
+      if 'definitions' in data[0] ['meanings'][0]:
+        if 'definitions' == None:
+          return
+        else:
+          if 'example' in data[0]['meanings'][0]['definitions'][0]:
+            ex=data[0]['meanings'][0]["definitions"][0]['example']
+            return ex
+
 
 def extractKeywordsFromContent(content):    
     res = riOFWord(content)
@@ -259,6 +282,16 @@ def extractKeywordsFromContent(content):
         synonyms = set()
         antonyms = set()
         definition = list()
+        example=[]
+        #audioLink=[]
+        req4 = requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+        newdata=req4.json()
+        #audiovar=None
+        #audiovar=findAudio(newdata)
+        exvar=None
+        exvar=findExample(newdata)
+        #audioLink.append(audiovar)
+        example.append(exvar)
 
         for syn in syns:
             synon = [word.name() for word in syn.lemmas()]
@@ -267,5 +300,5 @@ def extractKeywordsFromContent(content):
             antonyms.update(anton)
             definition.append(syn.definition())    
 
-        result.append(WordInformation(word, definition, list(synonyms), list(antonyms)).__dict__)
+        result.append(WordInformation(word, definition, list(synonyms), list(antonyms),list(example)).__dict__)
     return result

@@ -164,7 +164,6 @@ nlp = spacy.load('en_core_web_sm')
 
 def cleanData(text):    
     text = re.sub('\n',' ',str(text))
-    text = re.sub("'s",'',str(text))
     text = re.sub("-",' ',str(text))
     
     result = ''

@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mesadb',
         'USER': 'root',
-        'PASSWORD': 'Password123#@!',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306'        
     }
