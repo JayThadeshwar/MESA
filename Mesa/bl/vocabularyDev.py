@@ -1,3 +1,5 @@
+import types
+from typing import Dict
 import nltk
 
 # nltk.download('punkt')
@@ -21,6 +23,7 @@ from nltk.tokenize import RegexpTokenizer
 from rake_nltk import Rake
 from collections import OrderedDict
 from spacy.lang.en.stop_words import STOP_WORDS
+from googletrans import Translator
 
 #TextRank ALgo
 nlp = spacy.load('en_core_web_sm')
@@ -237,24 +240,39 @@ class WordInformation:
     definition=[]
     synonyms=[]
     antonyms=[]
-    # example=[]
-    # audioLink=''
-    # translatedWord=''
+    example=[]
+    audioLink=''
+    translatedWord=''
 
-    def __init__(self,w,d,s,a):
+    def __init__(self,w,d,s,a,e,ad,t):
         self.word=w
         self.definition=d
         self.synonyms=s
         self.antonyms=a
-        # self.example=e
-        # self.audioLink=ad
-        # self.translatedWord=t    
+        self.example=e
+        self.audioLink=ad
+        self.translatedWord=t    
 
 def extractKeywordsFromContent(content):    
     res = riOFWord(content)
     result = list()
+    translator = Translator()
+
 
     for word in list(res.keys())[:10]:
+        req = requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+        data = req.json()
+        print(word)
+
+        audioLink = list()
+        examples = list()
+
+        if(isinstance(data, list)):
+            for obj in data:                
+                audioLink.append([info['audio'] for info in obj['phonetics'] if 'audio' in info and info['audio'] != ""])
+                for info in obj['meanings']:
+                    examples += [content['example'] for content in info['definitions'] if 'example' in content]
+
         syns = wordnet.synsets(word)
         synonyms = set()
         antonyms = set()
@@ -266,6 +284,12 @@ def extractKeywordsFromContent(content):
             synonyms.update(synon)
             antonyms.update(anton)
             definition.append(syn.definition())    
+        
+        translated_word = translator.translate(word, src='en', dest='hi')   
+        al = ''
+        if len(audioLink) > 0:
+            al = audioLink[0]
 
-        result.append(WordInformation(word, definition, list(synonyms), list(antonyms)).__dict__)
+        if(isinstance(data, list)):
+            result.append(WordInformation(word, definition, list(synonyms), list(antonyms), examples, al, translated_word.text).__dict__)
     return result
