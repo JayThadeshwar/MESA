@@ -3,6 +3,7 @@ from django.http.response import JsonResponse
 
 from rest_framework.parsers import JSONParser
 from rest_framework import viewsets
+from Mesa.bl.mcq import extractMCQ
 
 from Mesa.models import Chapter, User
 from Mesa.serializers import UserSerializer, ChapterSerializer
@@ -78,3 +79,11 @@ def summarizeApi(request, chapter_id):
         chapter=Chapter.objects.get(id = chapter_id)                    
         result = summarizemethod(chapter.content)   
         return JsonResponse(result, safe=False)
+
+@csrf_exempt
+def mcqApi(request, chapter_id):
+    if request.method=='GET':
+        chapter=Chapter.objects.get(id = chapter_id)                    
+        result = extractMCQ(chapter.content)   
+        return JsonResponse(result, safe=False)
+        

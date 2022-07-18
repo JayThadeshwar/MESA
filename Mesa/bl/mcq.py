@@ -17,9 +17,9 @@ from pywsd.lesk import adapted_lesk
 from pywsd.lesk import simple_lesk
 from pywsd.lesk import cosine_lesk
 from nltk.corpus import wordnet as wn
-nltk.download('averaged_perceptron_tagger')
-nltk.download('stopwords')
-nltk.download('popular')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('stopwords')
+# nltk.download('popular')
 
 # class MCQ:
 #     mcq=[]
